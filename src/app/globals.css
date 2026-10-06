@@ -1,26 +1,169 @@
 @import "tailwindcss";
 
+/*
+  Design system tokens (PRD §41). Palette rationale: most "AI-generated fintech" UIs reach
+  for indigo/violet gradients — we deliberately don't. This society is about trust, growth,
+  and community, so the primary hue is a deep emerald (money/growth/trust) paired with a
+  warm gold accent (premium, achievement, belonging) on warm neutral surfaces rather than
+  cold slate grays. Dark mode is a genuinely separate palette, not an inversion filter.
+*/
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #faf9f6;
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --foreground: #1a1f1c;
+  --foreground-muted: #5b6560;
+  --border: #e5e2d9;
+
+  --primary: #0b6e4f;
+  --primary-hover: #095c42;
+  --primary-foreground: #f7fbf8;
+  --primary-soft: #e3f2ea;
+
+  --accent: #c8952f;
+  --accent-hover: #b17f23;
+  --accent-foreground: #241a04;
+  --accent-soft: #f8ecd4;
+
+  --success: #1e8e5a;
+  --warning: #b3791a;
+  --danger: #b3261e;
+  --info: #2563a8;
+
+  --ring: color-mix(in srgb, var(--primary) 45%, transparent);
+
+  --shadow-color: 210 20% 20%;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.875rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.75rem;
+
+  --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root[data-theme="dark"] {
+  --background: #0d1210;
+  --surface: #141a17;
+  --surface-raised: #1a2320;
+  --foreground: #eef2ef;
+  --foreground-muted: #9fada5;
+  --border: #26332d;
+
+  --primary: #34c98a;
+  --primary-hover: #45d699;
+  --primary-foreground: #06130d;
+  --primary-soft: #16332a;
+
+  --accent: #e0ac4c;
+  --accent-hover: #eab85e;
+  --accent-foreground: #241a04;
+  --accent-soft: #3a2e14;
+
+  --success: #34c98a;
+  --warning: #e0ac4c;
+  --danger: #e5645c;
+  --info: #5b9bd9;
+
+  --shadow-color: 0 0% 0%;
+  color-scheme: dark;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
   --color-foreground: var(--foreground);
+  --color-foreground-muted: var(--foreground-muted);
+  --color-border: var(--border);
+
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-soft: var(--primary-soft);
+
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent-soft: var(--accent-soft);
+
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
+
   --font-sans: var(--font-geist-sans);
+  --font-display: var(--font-fraunces);
   --font-mono: var(--font-geist-mono);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  border-color: var(--border);
+}
+
+html {
+  color-scheme: light;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Reusable premium surface utilities                                     */
+/* ---------------------------------------------------------------------- */
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .surface-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow:
+      0 1px 2px hsl(var(--shadow-color) / 0.04),
+      0 8px 24px -12px hsl(var(--shadow-color) / 0.12);
+  }
+
+  .surface-glass {
+    background: color-mix(in srgb, var(--surface) 72%, transparent);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+  }
+
+  .gradient-mesh {
+    background-image:
+      radial-gradient(60% 50% at 15% 10%, color-mix(in srgb, var(--primary) 22%, transparent), transparent 70%),
+      radial-gradient(50% 45% at 85% 15%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 70%),
+      radial-gradient(70% 60% at 50% 100%, color-mix(in srgb, var(--primary) 10%, transparent), transparent 70%);
+  }
+
+  .text-gradient-primary {
+    background-image: linear-gradient(120deg, var(--primary) 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .focus-ring {
+    outline: none;
+  }
+  .focus-ring:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}
+
+::selection {
+  background: var(--primary-soft);
+  color: var(--primary);
 }
